@@ -1,0 +1,465 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+
+:root {
+    --grey: #B0B0B0;
+    --purple: #9873FF;
+}
+
+html {
+    font-family: 'Open Sans', sans-serif;
+}
+
+input:focus,
+button:focus,
+.form-select:focus  {
+    box-shadow: none !important;
+}
+
+.grey {
+    color: var(--grey);
+}
+
+.purple {
+    color: var(--purple);
+}
+
+/* Navbar */
+.navbar {
+    padding: 20px 0;
+    box-shadow: 0px 9.03012px 27.0904px rgba(176, 190, 197, 0.32), 0px 3.38629px 5.64383px rgba(176, 190, 197, 0.32);
+}
+
+.navbar form {
+    margin-left: 40px;
+}
+
+.navbar form input {
+    height: 44px;
+    border-radius: 0;
+    font-size: 14px;
+    width: 581px;
+    color: var(--grey);
+    border: 1px solid rgba(51, 51, 51, 0.2);
+}
+
+.navbar form input:focus {
+    border: 1px solid rgba(51, 51, 51, 0.2);
+}
+
+/* Main */
+
+main {
+    background: #E5E5E5;
+    height: 100vh;
+}
+
+main h4 {
+    font-weight: 700;
+    margin-top: 40px;
+}
+
+.table {
+    margin-top: 10px;
+    vertical-align: middle;
+}
+
+.table>:not(caption)>*>* {
+    border-bottom-width: 0px;
+}
+
+.table tbody {
+    background-color: #fff;
+}
+
+.table thead th {
+    font-weight: 400;
+    font-size: 12px;
+    color: var(--grey);
+    cursor: pointer;
+}
+
+.table thead th:hover {
+    color: #333;
+}
+
+.table thead .active {
+    color: var(--purple);
+    font-weight: 700;
+}
+
+.table thead .active:hover,
+.table thead .active:focus {
+    color: var(--purple);
+    font-weight: 700;
+}
+
+.table tbody .contacts a {
+    position: relative;
+    z-index: 1 !important;
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.table tbody .contacts a:hover {
+    opacity: 1;
+}
+
+.table tbody .contacts img {
+    position: relative;
+    z-index: -1;
+}
+
+.table tbody tr {
+    height: 60px;
+    border-bottom: 1px solid #C8C5D1;
+}
+
+.table td {
+    font-size: 14px;
+}
+
+.table__id {
+    font-size: 12px !important;
+    color: var(--grey);
+}
+
+.tooltip-test {
+    position: relative;
+    z-index: 9999 !important;
+    position: fixed;
+    padding: 7px 14px 8px 14px;
+    text-align: center;
+    font-size: 12px;
+    color: #fff;
+    background: #333;
+}
+
+.tooltip-test::after {
+    content: " ";
+    position: absolute;
+    top: 100%; /* At the bottom of the tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+  }
+
+#change {
+    cursor: pointer;
+}
+
+#delete {
+    margin-left: 30px;
+    cursor: pointer;
+}
+
+#change:hover {
+    color: #9873FF;
+}
+
+#delete:hover {
+    color: #f06a4d;
+}
+
+#change img,
+#delete img {
+    margin-top: -2px;
+}
+
+.btn-create {
+    margin-top: 25px;
+    height: 44px;
+    width: 216px;
+    border: 1px solid #9873FF;
+    border-radius: 0;
+    color: var(--purple);
+    font-size: 14px;
+    fill: #9873FF;
+}
+
+.btn-create svg {
+    margin-top: -3px;
+    margin-right: 7px;
+    fill:inherit;
+}
+
+.btn-create:hover {
+    background-color: #8052FF;
+    color: #fff;
+    fill: #fff;
+}
+
+/* Modal */
+.modal-dialog {
+    width: 450px !important;
+}
+
+.modal-content {
+    border-radius: 0 !important;
+    border: 0;
+}
+
+.modal-header {
+    border: none !important;
+    padding-left: 30px;
+}
+
+#modalDeleteContact .modal-title {
+    margin-left: 29%;
+    text-align: center;
+}
+
+#modalDeleteContact .modal-body p {
+    margin: 0;
+    margin-top: -25px;
+}
+
+.modal-body a {
+    font-size: 14px;
+    color: #333;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.modal-body a:hover {
+    text-decoration: underline;
+    transition: 0.3s;
+}
+
+.btn-modal {
+    font-size: 14px;
+    margin-top: 25px;
+    margin-bottom: 5px;
+    width: 130px;
+    height: 44px;
+    color: #fff;
+    border-radius: 0;
+    background-color: var(--purple);
+}
+
+.btn-modal:hover {
+    background-color: #8052FF;
+    color: #fff;
+}
+
+#modalCreateContact .modal-body,
+#modalChangeContact .modal-body {
+    padding: 0;
+}
+
+#modalCreateContact form,
+#modalChangeContact form {
+    padding: 25px 0;
+}
+
+.modal form .inputs {
+    padding: 0 30px;
+}
+
+.modal form .inputs input {
+    position: relative;
+    z-index: 4; 
+    background-color: transparent;
+    font-size: 14px;
+    color: #333;
+    border-radius: 0;
+    border: 0;
+    border-bottom: 1px solid #c8c5d180;
+}
+
+.modal form .inputs input::placeholder {
+    color: #b0b0b0;
+}
+
+.modal form .inputs input:focus {
+    border-bottom: 1px solid #c8c5d1;
+}
+
+.surname-placeholder,
+.name-placeholder,
+.middle-name-placeholder,
+.surname-placeholder-change,
+.name-placeholder-change,
+.middle-name-placeholder-change {
+    position: relative;
+}
+
+.surname-placeholder::after,
+.name-placeholder::after {
+    content: '*';
+    top: 2px;
+    position: absolute;
+    z-index: 0;
+    font-size: 20px;
+    color: var(--purple);
+}
+
+.surname-placeholder::before,
+.name-placeholder::before,
+.middle-name-placeholder::before {
+    position: absolute;
+    z-index: 0;
+    top: 6px;
+    font-size: 14px;
+    color: var(--grey);
+}
+
+.surname-placeholder::before {
+    padding-left: 13px;
+    content: 'Фамилия';
+}
+
+.name-placeholder::before {
+    padding-left: 13px;
+    content: 'Имя';
+}
+
+.middle-name-placeholder::before {
+    padding-left: 13px;
+    content: 'Отчество';
+}
+
+.surname-placeholder::after {
+    padding-left: 71px;
+}
+
+.name-placeholder::after {
+    padding-left: 40px;
+}
+
+.surname-placeholder-change::before,
+.name-placeholder-change::before,
+.middle-name-placeholder-change::before {
+    position: absolute;
+    z-index: 0;
+    top: -8px;
+    font-size: 10px;
+    color: var(--grey);
+}
+
+.surname-placeholder-change::before {
+    padding-left: 12px;
+    content: 'Фамилия';
+}
+
+.name-placeholder-change::before {
+    padding-left: 12px;
+    content: 'Имя';
+}
+
+.middle-name-placeholder-change::before {
+    padding-left: 12px;
+    content: 'Отчество';
+}
+
+.surname-placeholder-change::after,
+.name-placeholder-change::after {
+    position: absolute;
+    top: -12px;
+    content: '*';
+    z-index: 0;
+    font-size: 14px;
+    color: var(--purple);
+}
+
+.surname-placeholder-change::after {
+    padding-left: 54px;
+}
+
+.name-placeholder-change::after {
+    padding-left: 32px;
+}
+
+.modal form .create-contacts {
+    background-color: #c8c5d130;
+    padding: 25px 30px;
+}
+
+.modal form .create-contacts .input-group {
+    border-radius: 0 !important;
+    background-color: transparent;
+}
+
+.modal form .create-contacts .form-select {
+    border: 1px solid #C8C5D1;
+    box-sizing: border-box;
+    font-size: 12px;
+    border-radius: 0 !important;
+    background-color: #E7E5EB;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    background-image: url('../img/arrow-select-down.svg');
+    background-repeat: no-repeat;
+    background-size: 10%;
+    background-position: 80px center;
+    outline: 0;
+}
+
+.modal form .create-contacts .form-select:focus {
+    background-image: url('../img/arrow-select-up.svg');
+}
+
+.modal form .create-contacts input {
+    width: 200px !important;
+    border: 1px solid #C8C5D1;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.modal form .create-contacts input:focus {
+    border: 1px solid #C8C5D1;
+}
+
+.modal form .create-contacts input::placeholder {
+    color: #b0b0b0;
+}
+
+.modal form .create-contacts .btn-group-delete {
+    position: relative;
+    z-index: 1;
+    padding: 0 7px;
+    background-color: #E7E5EB;
+    border: 1px solid #C8C5D1;
+    box-sizing: border-box;
+    border-radius: 0 !important;
+    transition: 0.1s;
+}
+
+.modal form .create-contacts .btn-group-delete:hover {
+    border: 1px solid #F06A4D;
+}
+
+.modal form .create-contacts .btn-group-delete img {
+    position: relative;
+    z-index: -1;
+    margin-top: -3px;
+}
+
+.modal form .create-contacts span {
+    font-weight: 600;
+    color: #333;
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.1s;
+}
+
+.modal form .create-contacts span img {
+    margin-top: -2px;
+    margin-right: 3px;
+}
+
+.modal form .create-contacts span:hover {
+    color: #9873ff;
+}
+
+.modal .modal-id {
+    color: #b0b0b0;
+    font-size: 12px;
+    font-weight: 400;
+    padding-left: 10px;
+}
