@@ -202,29 +202,10 @@ main h4 {
 
 .modal-header {
     border: none !important;
-    padding-left: 30px;
 }
 
-#modalDeleteContact .modal-title {
-    margin-left: 29%;
-    text-align: center;
-}
-
-#modalDeleteContact .modal-body p {
-    margin: 0;
-    margin-top: -25px;
-}
-
-.modal-body a {
-    font-size: 14px;
-    color: #333;
-    text-decoration: none;
-    transition: 0.3s;
-}
-
-.modal-body a:hover {
-    text-decoration: underline;
-    transition: 0.3s;
+.modal-title {
+    position: relative;
 }
 
 .btn-modal {
@@ -243,14 +224,35 @@ main h4 {
     color: #fff;
 }
 
-#modalCreateContact .modal-body,
-#modalChangeContact .modal-body {
+.modal-body a {
+    font-size: 14px;
+    color: #333;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.modal-body a:hover {
+    text-decoration: underline;
+    transition: 0.3s;
+}
+
+/* Удаление клиента */
+
+.modal-delete-client .modal-body p {
+    margin: 0;
+    margin-top: -25px;
+}
+
+/* Создание клиента */
+
+.modal-create-client .modal-body,
+.modal-change-client .modal-body {
     padding: 0;
 }
 
-#modalCreateContact form,
-#modalChangeContact form {
-    padding: 25px 0;
+.modal-create-client form,
+.modal-change-client form {
+    padding: 5px 0 25px;
 }
 
 .modal form .inputs {
@@ -258,6 +260,7 @@ main h4 {
 }
 
 .modal form .inputs input {
+    padding-left: 0;
     position: relative;
     z-index: 4; 
     background-color: transparent;
@@ -306,26 +309,23 @@ main h4 {
 }
 
 .surname-placeholder::before {
-    padding-left: 13px;
     content: 'Фамилия';
 }
 
 .name-placeholder::before {
-    padding-left: 13px;
     content: 'Имя';
 }
 
 .middle-name-placeholder::before {
-    padding-left: 13px;
     content: 'Отчество';
 }
 
 .surname-placeholder::after {
-    padding-left: 71px;
+    padding-left: 58px;
 }
 
 .name-placeholder::after {
-    padding-left: 40px;
+    padding-left: 27px;
 }
 
 .surname-placeholder-change::before,
@@ -339,17 +339,14 @@ main h4 {
 }
 
 .surname-placeholder-change::before {
-    padding-left: 12px;
     content: 'Фамилия';
 }
 
 .name-placeholder-change::before {
-    padding-left: 12px;
     content: 'Имя';
 }
 
 .middle-name-placeholder-change::before {
-    padding-left: 12px;
     content: 'Отчество';
 }
 
@@ -364,11 +361,11 @@ main h4 {
 }
 
 .surname-placeholder-change::after {
-    padding-left: 54px;
+    padding-left: 41px;
 }
 
 .name-placeholder-change::after {
-    padding-left: 32px;
+    padding-left: 19px;
 }
 
 .modal form .create-contacts {

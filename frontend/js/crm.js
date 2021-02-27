@@ -3,8 +3,7 @@
     const tbody = document.querySelector('.table tbody'),
           theads = document.querySelectorAll('.table thead tr th'),
           inputSearch = document.querySelector('#search'),
-          btnDelete = document.querySelector('#btn-delete'),
-          contactForms = document.querySelector('#contact-forms'),
+          contactForms = document.querySelectorAll('#contact-forms'),
           surnamePlaceholder = document.querySelectorAll('.surname-placeholder'),
           namePlaceholder = document.querySelectorAll('.name-placeholder'),
           middleNamePlaceholder = document.querySelectorAll('.middle-name-placeholder'),
@@ -13,6 +12,8 @@
           inputMiddleName = document.querySelectorAll('#middle-name'),
           btnAddContactForm = document.querySelectorAll('#btn-add-contact-form'),
           btnSave = document.querySelector('#btn-save'),
+          btnCreate = document.querySelector('.btn-create'),
+          modalContent = document.querySelector('#modal .modal-content'),
           changeModalHeader = document.querySelector('#modalChangeContact .modal-header');
 
     // Создание строки
@@ -24,10 +25,10 @@
             mmCreate = new Date(data.createdAt).getMonth() + 1,
             yyyyCreate = new Date(data.createdAt).getFullYear();
 
-        if (ddCreate < 10) ddCreate = '0' + ddCreate;
-        if (mmCreate < 10) mmCreate = '0' + mmCreate;
-        if (hoursCreate < 10) hoursCreate = '0' + hoursCreate;
-        if (minCreate < 10) minCreate = '0' + minCreate;
+        if (ddCreate < 10) {ddCreate = '0' + ddCreate;}
+        if (mmCreate < 10) {mmCreate = '0' + mmCreate;}
+        if (hoursCreate < 10) {hoursCreate = '0' + hoursCreate;}
+        if (minCreate < 10) {minCreate = '0' + minCreate;}
 
         // Форматируем дату редактирования
         let minChange = new Date(data.updatedAt).getMinutes(),
@@ -36,10 +37,10 @@
             mmChange = new Date(data.updatedAt).getMonth() + 1,
             yyyyChange = new Date(data.updatedAt).getFullYear();
 
-        if (ddChange < 10) ddChange = '0' + ddChange;
-        if (mmChange < 10) mmChange = '0' + mmChange;
-        if (hoursChange < 10) hoursChange = '0' + hoursChange;
-        if (minChange < 10) minChange = '0' + minChange;
+        if (ddChange < 10) {ddChange = '0' + ddChange;}
+        if (mmChange < 10) {mmChange = '0' + mmChange;}
+        if (hoursChange < 10) {hoursChange = '0' + hoursChange;}
+        if (minChange < 10) {minChange = '0' + minChange;}
 
         
         // Формируем контакты
@@ -98,20 +99,19 @@
 
         aChange.setAttribute('id', 'change');
         aChange.setAttribute('data-bs-toggle', 'modal');
-        aChange.setAttribute('data-bs-target', '#modalChangeContact');
+        aChange.setAttribute('data-bs-target', '#modal');
         aChange.setAttribute('data-id', data.id);
         aChange.innerHTML = `
             <img src="img/change.svg">
             Изменить
         `;
         aChange.addEventListener('click', () => {
-            changeModalHeader.prepend(createChangeModalTitle(aChange.getAttribute('data-id')));
             changeClient(aChange.getAttribute('data-id'));
         });
 
         aDelete.setAttribute('id', 'delete');
         aDelete.setAttribute('data-bs-toggle', 'modal');
-        aDelete.setAttribute('data-bs-target', '#modalDeleteContact');
+        aDelete.setAttribute('data-bs-target', '#modal');
         aDelete.setAttribute('data-id', data.id);
         aDelete.innerHTML = `
             <img src="img/delete.svg">
@@ -122,7 +122,10 @@
         tr.append(td);
 
         aDelete.addEventListener('click', () => {
-            deleteContact(aDelete.getAttribute('data-id'));
+            modalContent.innerHTML = '';
+            modalContent.classList.remove('modal-create-client', 'modal-change-client');
+            modalContent.classList.add('modal-delete-client');
+            deleteClient(aDelete.getAttribute('data-id'));
         });
 
         return tr;
@@ -136,7 +139,7 @@
 
         // если у нас есть подсказка...
         let tooltipHtml = target.dataset.tooltip;
-        if (!tooltipHtml) return;
+        if (!tooltipHtml) {return;}
 
         // ...создадим элемент для подсказки
         tooltipElem = document.createElement('div');
@@ -148,7 +151,7 @@
         let coords = target.getBoundingClientRect();
 
         let left = coords.left + (target.offsetWidth - tooltipElem.offsetWidth) / 2;
-        if (left < 0) left = 0; // не заезжать за левый край окна
+        if (left < 0) {left = 0;} // не заезжать за левый край окна
 
         let top = coords.top - tooltipElem.offsetHeight - 5;
         if (top < 0) { // если подсказка не помещается сверху, то отображать её снизу
@@ -195,8 +198,8 @@
 
         function sortID(arg1, arg2, arrow) {
             displayTable(arr.sort((a, b) => {
-                if (a.id < b.id) return arg1;
-                if (a.id > b.id) return arg2;
+                if (a.id < b.id) {return arg1;}
+                if (a.id > b.id) {return arg2;}
                 return 0;
             }));
             theads[0].classList.add('active');
@@ -218,8 +221,8 @@
         // Сортировка по ФИО
         function sortFIO(arg1, arg2, arrow) {
             displayTable(arr.sort((a, b) => {
-                if (a.surname + a.name + a.middleName < b.surname + b.name + b.middleName) return arg1;
-                if (a.surname + a.name + a.middleName > b.surname + b.name + b.middleName) return arg2;
+                if (a.surname + a.name + a.middleName < b.surname + b.name + b.middleName) {return arg1;}
+                if (a.surname + a.name + a.middleName > b.surname + b.name + b.middleName) {return arg2;}
                 return 0;
             }));
             theads[1].classList.add('active');
@@ -241,8 +244,8 @@
         // Сортировка по дате создания
         function sortCreateDate(arg1, arg2, arrow) {
             displayTable(arr.sort((a, b) => {
-                if (a.createdAt < b.createdAt) return arg1;
-                if (a.createdAt > b.createdAt) return arg2;
+                if (a.createdAt < b.createdAt) {return arg1;}
+                if (a.createdAt > b.createdAt) {return arg2;}
                 return 0;
             }));
             theads[2].classList.add('active');
@@ -264,8 +267,8 @@
         // Сортировка по дате изменения
         function sortChangeDate(arg1, arg2, arrow) {
             displayTable(arr.sort((a, b) => {
-                if (a.updatedAt < b.updatedAt) return arg1;
-                if (a.updatedAt > b.updatedAt) return arg2;
+                if (a.updatedAt < b.updatedAt) {return arg1;}
+                if (a.updatedAt > b.updatedAt) {return arg2;}
                 return 0;
             }));
             theads[3].classList.add('active');
@@ -285,8 +288,51 @@
         });
     }
 
+    // Создаем заголовок для модального окна
+    function createModalHeader(textContent, paddingLeft = '13px', id = '', idText = '') {
+        const modalHeader = document.createElement('div'),
+              modalTitle = document.createElement('h5'),
+              idClient = document.createElement('span'),
+              btnClose = document.createElement('button');
+
+        modalHeader.classList.add('modal-header');
+        modalTitle.classList.add('modal-title');
+        modalTitle.style.left = paddingLeft;
+        modalTitle.textContent = textContent;
+        modalTitle.append(idClient);
+        idClient.classList.add('modal-id');
+        idClient.textContent = idText + ' ' + id;
+        btnClose.classList.add('btn-close');
+        btnClose.setAttribute('type', 'button');
+        btnClose.setAttribute('data-bs-dismiss', 'modal');
+        btnClose.setAttribute('aria-label', 'Close');
+
+        modalHeader.append(modalTitle, btnClose);
+
+        return modalHeader;
+    }
+
     // Удаление контакта
-    function deleteContact(id) {
+    function deleteClient(id) {
+        modalContent.append(createModalHeader('Удалить клиента', '30%'));
+
+        const modalBody = document.createElement('div'),
+              text = document.createElement('p'),
+              btnDelete = document.createElement('button'),
+              cancel = document.createElement('a'),
+              br = document.createElement('br');
+
+        modalBody.classList.add('modal-body', 'text-center');
+        text.innerHTML = 'Вы действительно хотите удалить<br> данного клиента?';
+        btnDelete.classList.add('btn', 'btn-modal');
+        btnDelete.textContent = 'Удалить';
+        cancel.setAttribute('href', '');
+        cancel.setAttribute('data-bs-dismiss', 'modal');
+        cancel.textContent = 'Отмена';
+
+        modalBody.append(text, btnDelete, br, cancel);
+        modalContent.append(modalBody);
+
         btnDelete.addEventListener('click', () => {
             fetch(`http://localhost:3000/api/clients/${id}`, {
                 method: 'DELETE'
@@ -294,9 +340,115 @@
         });
     }
 
-    // Создаем форму для добавления контакта
-    let countForms = 0;
+    // Форма для контакта
+    let countContactsForms = 0;
 
+    function createForm(surenameValue = '', nameValue = '', middleNameValue = '') {
+        const modalBody = document.createElement('div'),
+              form = document.createElement('form'),
+              inputs = document.createElement('div'),
+              surname = document.createElement('div'),
+              name = document.createElement('div'),
+              middleName = document.createElement('div'),
+              inputSurname = document.createElement('input'),
+              inputName = document.createElement('input'),
+              inputMiddleName = document.createElement('input'),
+              createContacts = document.createElement('div'),
+              contactsForm = document.createElement('div'),
+              btnAddContactForm = document.createElement('span');
+
+        modalBody.classList.add('modal-body');
+        inputs.classList.add('inputs');
+        surname.classList.add('mb-3', 'surname-placeholder');
+        name.classList.add('mb-3', 'name-placeholder');
+        middleName.classList.add('mb-3', 'middle-name-placeholder');
+        inputSurname.classList.add('form-control');
+        inputSurname.setAttribute('type', 'text');
+        inputSurname.setAttribute('required', '');
+        inputSurname.value = surenameValue;
+        inputName.classList.add('form-control');
+        inputName.setAttribute('type', 'text');
+        inputName.setAttribute('required', '');
+        inputName.value = nameValue;
+        inputMiddleName.classList.add('form-control');
+        inputMiddleName.setAttribute('type', 'text');
+        inputMiddleName.value = middleNameValue;
+
+        surname.append(inputSurname);
+        name.append(inputName);
+        middleName.append(inputMiddleName);
+
+        createContacts.classList.add('create-contacts', 'text-center');
+        contactsForm.classList.add('contact-forms');
+        btnAddContactForm.innerHTML = `
+        <img src="img/plus.svg" alt="">
+        Добавить контакт
+        `;
+
+        createContacts.append(contactsForm, btnAddContactForm);
+
+        inputs.append(surname, name, middleName);
+        form.append(inputs, createContacts);
+        modalBody.append(form);
+
+        // Меняем стили у label
+        inputSurname.addEventListener('input', () => {
+            surname.classList.remove('surname-placeholder');
+            surname.classList.add('surname-placeholder-change');
+
+            if (!inputSurname.value) {
+                surname.classList.remove('surname-placeholder-change');
+                surname.classList.add('surname-placeholder');
+            }
+        });
+        inputName.addEventListener('input', () => {
+            name.classList.remove('name-placeholder');
+            name.classList.add('name-placeholder-change');
+
+            if (!inputName.value) {
+                name.classList.remove('name-placeholder-change');
+                name.classList.add('name-placeholder');
+            }
+        });
+        inputMiddleName.addEventListener('input', () => {
+            middleName.classList.remove('middle-name-placeholder');
+            middleName.classList.add('middle-name-placeholder-change');
+
+            if (!inputMiddleName.value) {
+                middleName.classList.remove('middle-name-placeholder-change');
+                middleName.classList.add('middle-name-placeholder');
+            }
+        });
+
+        // Меняем hover у "Добавить контакт"
+        btnAddContactForm.addEventListener('mouseover', () => {
+            btnAddContactForm.innerHTML = `
+            <img src="img/plus-hover.svg">
+            Добавить контакт
+            `;
+        });
+        btnAddContactForm.addEventListener('mouseout', () => {
+            btnAddContactForm.innerHTML = `
+            <img src="img/plus.svg">
+            Добавить контакт
+            `;
+        });
+
+        return {
+            inputSurname,
+            inputName,
+            inputMiddleName,
+            surname,
+            name,
+            middleName,
+            btnAddContactForm,
+            contactsForm,
+            form,
+            modalBody
+        };
+    }
+
+    // Создаем форму для добавления контакта
     function createAddContactForm(value = '') {
         const inputGroup = document.createElement('div'),
               select = document.createElement('select'),
@@ -345,152 +497,122 @@
         select.append(optionTel, optionEmail, optionFacebook, optionVK, optionOther);
         inputGroup.append(select, input, btnDeleteContact);
 
-        btnDeleteContact.addEventListener('click', () => {
-            inputGroup.remove();
-            --countForms;
-            if (countForms < 10) {
-                btnAddContactForm.style.display = 'inline-block';
-            }
-        });
-
-        return inputGroup;
+        return {
+            btnDeleteContact,
+            inputGroup
+        };
     }
 
-    // Наведение на кнопку Добавить конакт
-    function hoverAddContact () {
-        btnAddContactForm.forEach(i => {
-            i.addEventListener('mouseover', () => {
-                i.innerHTML = `
-                    <img src="img/plus-hover.svg">
-                    Добавить контакт
-                `;
-            });
-        });
-        btnAddContactForm.forEach(i => {
-            i.addEventListener('mouseout', () => {
-                i.innerHTML = `
-                    <img src="img/plus.svg">
-                    Добавить контакт
-                `;
-            });
-        });
+    // Создаем кнопки для сохранения клиента
+    function createBtnSave() {
+        const btnWrapper = document.createElement('div'),
+              btnSave = document.createElement('button'),
+              br = document.createElement('br'),
+              cancel = document.createElement('a');
+
+        btnWrapper.classList.add('btn-wrapper', 'text-center');
+        btnSave.classList.add('btn', 'btn-modal');
+        btnSave.textContent = 'Сохранить';
+        cancel.setAttribute('href', '');
+        cancel.setAttribute('data-bs-dismiss', 'modal');
+        cancel.textContent = 'Отмена';
+
+        btnWrapper.append(btnSave, br, cancel);
+
+        return {
+            btnSave,
+            btnWrapper
+        };
     }
 
-    // Добавляем контакт
-    function addClient() {
-        hoverAddContact();
+    // Добавление контакта
+    function createClient() {
+        btnCreate.addEventListener('click', () => {
+            countContactsForms = 0;
+            modalContent.innerHTML = '';
+            modalContent.classList.remove('modal-delete-client', 'modal-change-client');
+            modalContent.classList.add('modal-create-client');
+            modalContent.append(createModalHeader('Новый клиент'));
 
-        btnAddContactForm[0].addEventListener('click', () => {
-            contactForms.append(createAddContactForm());
-            ++countForms;
-            if (countForms >= 10) {
-                btnAddContactForm[0].style.display = 'none';
-            }
-        });
+            const modalCreateForm = createForm(),
+                  modalCreateBtnSave = createBtnSave();
 
-        btnSave.addEventListener('click', () => {
-            let contacts = [];
-            for (let i = 0; i < contactForms.childNodes.length; ++i) {
-                if (contactForms.childNodes[i].childNodes[0].value.trim() && contactForms.childNodes[i].childNodes[1].value.trim()) {
-                    contacts.push({ type: contactForms.childNodes[i].childNodes[0].value.trim(), value: contactForms.childNodes[i].childNodes[1].value.trim() });
-                    console.log('ok');
+            modalContent.append(modalCreateForm.modalBody);
+            modalCreateForm.form.append(modalCreateBtnSave.btnWrapper);
+
+            modalCreateForm.btnAddContactForm.addEventListener('click', () => {
+                const modalCreateAddContactForm = createAddContactForm();
+
+                ++countContactsForms;
+                modalCreateForm.contactsForm.append(modalCreateAddContactForm.inputGroup);
+                if(countContactsForms >= 10) {
+                    modalCreateForm.btnAddContactForm.style.display = 'none';
                 }
-                console.log(contacts);
-            }
 
-            fetch('http://localhost:3000/api/clients', {
-                method: 'POST',
-                body: JSON.stringify({
-                    name: inputName[0].value.trim().toLowerCase(),
-                    surname: inputSurname[0].value.trim().toLowerCase(),
-                    lastName: inputMiddleName[0].value.trim().toLowerCase(),
-                    contacts: contacts
-                }),
-                headers: {
-                    'Content-type': 'application/json'
-                }
-            });
-        });
-    }
-
-    // Меняем label
-    function toggleLabel() {
-        inputSurname.forEach(i => {
-            i.addEventListener('input', () => {
-                surnamePlaceholder.forEach(i => {
-                    i.classList.remove('surname-placeholder');
-                    i.classList.add('surname-placeholder-change');
+                modalCreateAddContactForm.btnDeleteContact.addEventListener('click', () => {
+                    --countContactsForms;
+                    modalCreateAddContactForm.inputGroup.remove();
+                    if (countContactsForms < 10) {
+                        modalCreateForm.btnAddContactForm.style.display = 'inline-block';
+                    }
                 });
-                if (!i.value) {
-                    surnamePlaceholder.forEach(i => {
-                        i.classList.remove('surname-placeholder-change');
-                        i.classList.add('surname-placeholder');
-                    });
-                }
             });
-        });
-        inputName.forEach(i => {
-            i.addEventListener('input', () => {
-                namePlaceholder.forEach(i => {
-                    i.classList.remove('name-placeholder');
-                    i.classList.add('name-placeholder-change');
-                });
-                if (!i.value) {
-                    namePlaceholder.forEach(i => {
-                        i.classList.remove('name-placeholder-change');
-                        i.classList.add('name-placeholder');
-                    });
+
+            modalCreateBtnSave.btnSave.addEventListener('click', () => {
+                let contacts = [];
+                console.dir(modalCreateForm.contactsForm);
+                for (let i = 0; i < modalCreateForm.contactsForm.childNodes.length; ++i) {
+                    console.dir(modalCreateForm.contactsForm.childNodes[i].childNodes[0].value.trim());
+                    if (modalCreateForm.contactsForm.childNodes[i].childNodes[0].value.trim() && modalCreateForm.contactsForm.childNodes[i].childNodes[1].value.trim()) {
+                        contacts.push({ type: modalCreateForm.contactsForm.childNodes[i].childNodes[0].value.trim(), value: modalCreateForm.contactsForm.childNodes[i].childNodes[1].value.trim() });
+                    }
                 }
-            });
-        });
-        inputMiddleName.forEach(i => {
-            i.addEventListener('input', () => {
-                middleNamePlaceholder.forEach(i => {
-                    i.classList.remove('middle-name-placeholder');
-                    i.classList.add('middle-name-placeholder-change');
+
+                fetch('http://localhost:3000/api/clients', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        name: modalCreateForm.inputName.value.trim().toLowerCase(),
+                        surname: modalCreateForm.inputSurname.value.trim().toLowerCase(),
+                        lastName: modalCreateForm.inputMiddleName.value.trim().toLowerCase(),
+                        contacts: contacts
+                    }),
+                    headers: {
+                        'Content-type': 'application/json'
+                    }
                 });
-                if (!i.value) {
-                    middleNamePlaceholder.forEach(i => {
-                        i.classList.remove('middle-name-placeholder-change');
-                        i.classList.add('middle-name-placeholder');
-                    });
-                }
             });
         });
     }
 
-    // Заголовок для изменения контакта
-    function createChangeModalTitle(id) {
-        changeModalHeader.innerHTML = `
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        `;
-        const modalTitle = document.createElement('h5'),
-              idClient = document.createElement('span');
-
-        modalTitle.classList.add('modal-title');
-        modalTitle.textContent = 'Измененить данные';
-        idClient.classList.add('modal-id');
-        idClient.textContent = `ID: ${id}`;
-        modalTitle.append(idClient);
-
-        return modalTitle;
-    }
-
-    // Изменение клиента
+    // Изменение контакта
     async function changeClient(id) {
-        const response = await fetch(`http://localhost:3000/api/clients/${id}`),
-              data = await response.json();
+        modalContent.innerHTML = '';
+        modalContent.classList.remove('modal-create-client', 'modal-delete-client');
+        modalContent.classList.add('modal-change-client');
 
-        surnamePlaceholder[1].classList.remove('surname-placeholder');
-        surnamePlaceholder[1].classList.add('surname-placeholder-change');
-        namePlaceholder[1].classList.remove('name-placeholder');
-        namePlaceholder[1].classList.add('name-placeholder-change');
-        middleNamePlaceholder[1].classList.remove('middle-name-placeholder');
-        middleNamePlaceholder[1].classList.add('middle-name-placeholder-change');
-        
-        inputName[1].value = data.name.substr(0, 1).toUpperCase() + data.name.substr(1).toLowerCase();
-        inputSurname[1].value = data.surname.substr(0, 1).toUpperCase() + data.surname.substr(1).toLowerCase();
-        inputMiddleName[1].value = data.lastName.substr(0, 1).toUpperCase() + data.lastName.substr(1).toLowerCase();
+        const response = await fetch(`http://localhost:3000/api/clients/${id}`),
+              data = await response.json(),
+              modalCreateForm = createForm(
+                  data.surname.substr(0, 1).toUpperCase() + data.surname.substr(1).toLowerCase(), 
+                  data.name.substr(0, 1).toUpperCase() + data.name.substr(1).toLowerCase(),
+                  data.lastName.substr(0, 1).toUpperCase() + data.lastName.substr(1).toLowerCase()
+              ),
+              modalCreateAddContactForm = createAddContactForm();
+
+        modalContent.append(createModalHeader('Изменить данные', '13px', id, 'ID: '));
+        modalContent.append(modalCreateForm.modalBody);
+
+        modalCreateForm.surname.classList.remove('surname-placeholder');
+        modalCreateForm.surname.classList.add('surname-placeholder-change');
+        modalCreateForm.name.classList.remove('name-placeholder');
+        modalCreateForm.name.classList.add('name-placeholder-change');
+        modalCreateForm.middleName.classList.remove('middle-name-placeholder');
+        modalCreateForm.middleName.classList.add('middle-name-placeholder-change');
+
+        for (const contact of data.contacts) {
+            modalCreateForm.contactsForm.append(createAddContactForm().inputGroup);
+            console.log(contact);
+        }
     }
 
     // Отрисовка таблицы
@@ -506,19 +628,16 @@
         const data = await response.json();
 
         displayTable(data.sort((a, b) => {
-            if (a.id < b.id) return -1;
-            if (a.id > b.id) return 1;
+            if (a.id < b.id) {return -1;}
+            if (a.id > b.id) {return 1;}
             return 0;
         }));
 
         // Сортировка по заголовкам таблицы
         sort(data);
 
-        // Меняем label
-        toggleLabel();
-
         // Добавление клиента
-        addClient();
+        createClient();
     }
 
     appContacts('http://localhost:3000/api/clients');
