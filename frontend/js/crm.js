@@ -2,19 +2,10 @@
     // Константы 
     const tbody = document.querySelector('.table tbody'),
           theads = document.querySelectorAll('.table thead tr th'),
+          loading = document.querySelector('.loading'),
           inputSearch = document.querySelector('#search'),
-          contactForms = document.querySelectorAll('#contact-forms'),
-          surnamePlaceholder = document.querySelectorAll('.surname-placeholder'),
-          namePlaceholder = document.querySelectorAll('.name-placeholder'),
-          middleNamePlaceholder = document.querySelectorAll('.middle-name-placeholder'),
-          inputSurname = document.querySelectorAll('#surname'),
-          inputName = document.querySelectorAll('#name'),
-          inputMiddleName = document.querySelectorAll('#middle-name'),
-          btnAddContactForm = document.querySelectorAll('#btn-add-contact-form'),
-          btnSave = document.querySelector('#btn-save'),
           btnCreate = document.querySelector('.btn-create'),
-          modalContent = document.querySelector('#modal .modal-content'),
-          changeModalHeader = document.querySelector('#modalChangeContact .modal-header');
+          modalContent = document.querySelector('#modal .modal-content');
 
     // Создание строки
     function createContact(data) {
@@ -83,6 +74,10 @@
                 `);
             }
         });
+
+        if (contacts.length > 5) {
+            contacts.splice(5, 0, '<br>');
+        }
         
         const tr = document.createElement('tr'),
               td = document.createElement('td'),
@@ -91,7 +86,11 @@
         
         tr.innerHTML = `
             <td class="table__id">${data.id}</td>
-            <td>${data.surname.substr(0, 1).toUpperCase() + data.surname.substr(1).toLowerCase()} ${data.name.substr(0, 1).toUpperCase() + data.name.substr(1).toLowerCase()} ${data.lastName.substr(0, 1).toUpperCase() + data.lastName.substr(1).toLowerCase()}</td>
+            <td>
+                ${data.surname.substr(0, 1).toUpperCase() + data.surname.substr(1).toLowerCase()} 
+                ${data.name.substr(0, 1).toUpperCase() + data.name.substr(1).toLowerCase()} 
+                ${data.lastName.substr(0, 1).toUpperCase() + data.lastName.substr(1).toLowerCase()}
+            </td>
             <td>${ddCreate}.${mmCreate}.${yyyyCreate} <span class="grey">${hoursCreate}:${minCreate}</span></td>
             <td>${ddChange}.${mmChange}.${yyyyChange} <span class="grey">${hoursChange}:${minChange}</span></td>
             <td class="contacts">${contacts.join('')}</td>
@@ -143,7 +142,7 @@
 
         // ...создадим элемент для подсказки
         tooltipElem = document.createElement('div');
-        tooltipElem.className = 'tooltip-test';
+        tooltipElem.className = 'tooltips';
         tooltipElem.innerHTML = tooltipHtml;
         document.body.append(tooltipElem);
 
@@ -165,6 +164,8 @@
     document.onmouseout = function() {
         if (tooltipElem) {
             tooltipElem.remove();
+            tooltipElem = null;
+        } else {
             tooltipElem = null;
         }
     };
@@ -312,28 +313,47 @@
         return modalHeader;
     }
 
+    // Создаем кнопки сохранения, удаления, отмены
+    function createBtnWrapper(textBtn, textCancelOrDelete) {
+        const btnWrapper = document.createElement('div'),
+              errorText = document.createElement('p'),
+              btnSaveOrDelete = document.createElement('button'),
+              br = document.createElement('br'),
+              cancelOrDelete = document.createElement('a');
+
+        errorText.classList.add('error-text');
+        btnWrapper.classList.add('btn-wrapper', 'text-center');
+        btnSaveOrDelete.classList.add('btn', 'btn-modal');
+        btnSaveOrDelete.textContent = textBtn;
+        cancelOrDelete.setAttribute('href', '');
+        cancelOrDelete.textContent = textCancelOrDelete;
+
+        btnWrapper.append(errorText, btnSaveOrDelete, br, cancelOrDelete);
+
+        return {
+            errorText,
+            cancelOrDelete,
+            btnSaveOrDelete,
+            btnWrapper
+        };
+    }
+
     // Удаление контакта
     function deleteClient(id) {
         modalContent.append(createModalHeader('Удалить клиента', '30%'));
 
         const modalBody = document.createElement('div'),
               text = document.createElement('p'),
-              btnDelete = document.createElement('button'),
-              cancel = document.createElement('a'),
-              br = document.createElement('br');
+              modalCreateBtnWrapper = createBtnWrapper('Удалить', 'Отмена');
 
         modalBody.classList.add('modal-body', 'text-center');
         text.innerHTML = 'Вы действительно хотите удалить<br> данного клиента?';
-        btnDelete.classList.add('btn', 'btn-modal');
-        btnDelete.textContent = 'Удалить';
-        cancel.setAttribute('href', '');
-        cancel.setAttribute('data-bs-dismiss', 'modal');
-        cancel.textContent = 'Отмена';
+        modalCreateBtnWrapper.cancelOrDelete.setAttribute('data-bs-dismiss', 'modal');
 
-        modalBody.append(text, btnDelete, br, cancel);
+        modalBody.append(text, modalCreateBtnWrapper.btnWrapper);
         modalContent.append(modalBody);
 
-        btnDelete.addEventListener('click', () => {
+        modalCreateBtnWrapper.btnSaveOrDelete.addEventListener('click', () => {
             fetch(`http://localhost:3000/api/clients/${id}`, {
                 method: 'DELETE'
             });
@@ -364,11 +384,9 @@
         middleName.classList.add('mb-3', 'middle-name-placeholder');
         inputSurname.classList.add('form-control');
         inputSurname.setAttribute('type', 'text');
-        inputSurname.setAttribute('required', '');
         inputSurname.value = surenameValue;
         inputName.classList.add('form-control');
         inputName.setAttribute('type', 'text');
-        inputName.setAttribute('required', '');
         inputName.value = nameValue;
         inputMiddleName.classList.add('form-control');
         inputMiddleName.setAttribute('type', 'text');
@@ -393,6 +411,7 @@
 
         // Меняем стили у label
         inputSurname.addEventListener('input', () => {
+            inputSurname.classList.remove('error-input');
             surname.classList.remove('surname-placeholder');
             surname.classList.add('surname-placeholder-change');
 
@@ -402,6 +421,7 @@
             }
         });
         inputName.addEventListener('input', () => {
+            inputName.classList.remove('error-input');
             name.classList.remove('name-placeholder');
             name.classList.add('name-placeholder-change');
 
@@ -434,6 +454,14 @@
             `;
         });
 
+        btnAddContactForm.addEventListener('click', () => {
+            ++countContactsForms;
+            contactsForm.append(createAddContactForm());
+            if (countContactsForms >= 10) {
+                btnAddContactForm.style.display = 'none';
+            }
+        });
+
         return {
             inputSurname,
             inputName,
@@ -449,7 +477,7 @@
     }
 
     // Создаем форму для добавления контакта
-    function createAddContactForm(value = '') {
+    function createAddContactForm(type = '', value = '') {
         const inputGroup = document.createElement('div'),
               select = document.createElement('select'),
               optionTel = document.createElement('option'),
@@ -462,7 +490,6 @@
 
         inputGroup.classList.add('input-group', 'mb-3');
         select.classList.add('form-select');
-        optionTel.setAttribute('selected', '');
         optionTel.setAttribute('value', 'Телефон');
         optionTel.textContent = 'Телефон';
         optionEmail.setAttribute('value', 'Email');
@@ -497,32 +524,33 @@
         select.append(optionTel, optionEmail, optionFacebook, optionVK, optionOther);
         inputGroup.append(select, input, btnDeleteContact);
 
-        return {
-            btnDeleteContact,
-            inputGroup
-        };
-    }
+        btnDeleteContact.addEventListener('click', () => {
+            --countContactsForms;
+            inputGroup.remove();
 
-    // Создаем кнопки для сохранения клиента
-    function createBtnSave() {
-        const btnWrapper = document.createElement('div'),
-              btnSave = document.createElement('button'),
-              br = document.createElement('br'),
-              cancel = document.createElement('a');
+            if (countContactsForms < 10) {
+                modalContent.childNodes[1].childNodes[0].childNodes[1].childNodes[1].style.display = 'inline-block';
+            }
+        });
 
-        btnWrapper.classList.add('btn-wrapper', 'text-center');
-        btnSave.classList.add('btn', 'btn-modal');
-        btnSave.textContent = 'Сохранить';
-        cancel.setAttribute('href', '');
-        cancel.setAttribute('data-bs-dismiss', 'modal');
-        cancel.textContent = 'Отмена';
+        switch (type) {
+            case 'Email':
+                optionEmail.setAttribute('selected', '');
+                break;
+            case 'Facebook':
+                optionFacebook.setAttribute('selected', '');
+                break;
+            case 'VK':
+                optionVK.setAttribute('selected', '');
+                break;
+            case 'Другое':
+                optionOther.setAttribute('selected', '');
+                break;
+            default:
+                optionTel.setAttribute('selected', '');
+        }
 
-        btnWrapper.append(btnSave, br, cancel);
-
-        return {
-            btnSave,
-            btnWrapper
-        };
+        return inputGroup;
     }
 
     // Добавление контакта
@@ -535,51 +563,53 @@
             modalContent.append(createModalHeader('Новый клиент'));
 
             const modalCreateForm = createForm(),
-                  modalCreateBtnSave = createBtnSave();
+                  modalCreateBtnWrapper = createBtnWrapper('Сохранить', 'Отмена');
 
             modalContent.append(modalCreateForm.modalBody);
-            modalCreateForm.form.append(modalCreateBtnSave.btnWrapper);
+            modalCreateForm.form.append(modalCreateBtnWrapper.btnWrapper);
+            modalCreateBtnWrapper.cancelOrDelete.setAttribute('data-bs-dismiss', 'modal');
 
-            modalCreateForm.btnAddContactForm.addEventListener('click', () => {
-                const modalCreateAddContactForm = createAddContactForm();
+            modalCreateBtnWrapper.btnSaveOrDelete.addEventListener('click', (e) => {
+                e.preventDefault();
 
-                ++countContactsForms;
-                modalCreateForm.contactsForm.append(modalCreateAddContactForm.inputGroup);
-                if(countContactsForms >= 10) {
-                    modalCreateForm.btnAddContactForm.style.display = 'none';
-                }
-
-                modalCreateAddContactForm.btnDeleteContact.addEventListener('click', () => {
-                    --countContactsForms;
-                    modalCreateAddContactForm.inputGroup.remove();
-                    if (countContactsForms < 10) {
-                        modalCreateForm.btnAddContactForm.style.display = 'inline-block';
-                    }
-                });
-            });
-
-            modalCreateBtnSave.btnSave.addEventListener('click', () => {
                 let contacts = [];
-                console.dir(modalCreateForm.contactsForm);
                 for (let i = 0; i < modalCreateForm.contactsForm.childNodes.length; ++i) {
-                    console.dir(modalCreateForm.contactsForm.childNodes[i].childNodes[0].value.trim());
-                    if (modalCreateForm.contactsForm.childNodes[i].childNodes[0].value.trim() && modalCreateForm.contactsForm.childNodes[i].childNodes[1].value.trim()) {
-                        contacts.push({ type: modalCreateForm.contactsForm.childNodes[i].childNodes[0].value.trim(), value: modalCreateForm.contactsForm.childNodes[i].childNodes[1].value.trim() });
+                    if (modalCreateForm.contactsForm.childNodes[i].childNodes[0].value.trim() && 
+                    modalCreateForm.contactsForm.childNodes[i].childNodes[1].value.trim()) {
+                        contacts.push({ 
+                            type: modalCreateForm.contactsForm.childNodes[i].childNodes[0].value.trim(), 
+                            value: modalCreateForm.contactsForm.childNodes[i].childNodes[1].value.trim() 
+                        });
                     }
                 }
 
-                fetch('http://localhost:3000/api/clients', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        name: modalCreateForm.inputName.value.trim().toLowerCase(),
-                        surname: modalCreateForm.inputSurname.value.trim().toLowerCase(),
-                        lastName: modalCreateForm.inputMiddleName.value.trim().toLowerCase(),
-                        contacts: contacts
-                    }),
-                    headers: {
-                        'Content-type': 'application/json'
-                    }
-                });
+                if (modalCreateForm.inputName.value.trim() && modalCreateForm.inputSurname.value.trim()) {
+                    fetch('http://localhost:3000/api/clients', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            name: modalCreateForm.inputName.value.trim().toLowerCase(),
+                            surname: modalCreateForm.inputSurname.value.trim().toLowerCase(),
+                            lastName: modalCreateForm.inputMiddleName.value.trim().toLowerCase(),
+                            contacts: contacts
+                        }),
+                        headers: {
+                            'Content-type': 'application/json'
+                        }
+                    });
+                } else if (!modalCreateForm.inputName.value.trim() && modalCreateForm.inputSurname.value.trim()) {
+                    modalCreateForm.inputName.classList.add('error-input');
+                    modalCreateBtnWrapper.errorText.textContent = 'Ошибка: не заполнено поле Имя';
+                    modalCreateBtnWrapper.btnSaveOrDelete.style.marginTop = '0px';
+                } else if (modalCreateForm.inputName.value.trim() && !modalCreateForm.inputSurname.value.trim()) {
+                    modalCreateForm.inputSurname.classList.add('error-input');
+                    modalCreateBtnWrapper.errorText.textContent = 'Ошибка: не заполнено поле Фамилия';
+                    modalCreateBtnWrapper.btnSaveOrDelete.style.marginTop = '0px';
+                } else {
+                    modalCreateForm.inputName.classList.add('error-input');
+                    modalCreateForm.inputSurname.classList.add('error-input');
+                    modalCreateBtnWrapper.errorText.textContent = 'Ошибка: не заполнены поля Фамилия и Имя';
+                    modalCreateBtnWrapper.btnSaveOrDelete.style.marginTop = '0px';
+                }
             });
         });
     }
@@ -597,10 +627,11 @@
                   data.name.substr(0, 1).toUpperCase() + data.name.substr(1).toLowerCase(),
                   data.lastName.substr(0, 1).toUpperCase() + data.lastName.substr(1).toLowerCase()
               ),
-              modalCreateAddContactForm = createAddContactForm();
+              modalCreateBtnWrapper = createBtnWrapper('Сохранить', 'Удалить клиента');
 
         modalContent.append(createModalHeader('Изменить данные', '13px', id, 'ID: '));
         modalContent.append(modalCreateForm.modalBody);
+        modalCreateForm.form.append(modalCreateBtnWrapper.btnWrapper);
 
         modalCreateForm.surname.classList.remove('surname-placeholder');
         modalCreateForm.surname.classList.add('surname-placeholder-change');
@@ -609,16 +640,66 @@
         modalCreateForm.middleName.classList.remove('middle-name-placeholder');
         modalCreateForm.middleName.classList.add('middle-name-placeholder-change');
 
+        countContactsForms = data.contacts.length;
         for (const contact of data.contacts) {
-            modalCreateForm.contactsForm.append(createAddContactForm().inputGroup);
-            console.log(contact);
+            modalCreateForm.contactsForm.append(createAddContactForm(contact.type, contact.value));
         }
+
+        modalCreateBtnWrapper.btnSaveOrDelete.addEventListener('click', (e) => {
+            e.preventDefault();
+            let contacts = [];
+                for (let i = 0; i < modalCreateForm.contactsForm.childNodes.length; ++i) {
+                    if (modalCreateForm.contactsForm.childNodes[i].childNodes[0].value.trim() && 
+                    modalCreateForm.contactsForm.childNodes[i].childNodes[1].value.trim()) {
+                        contacts.push({ 
+                            type: modalCreateForm.contactsForm.childNodes[i].childNodes[0].value.trim(), 
+                            value: modalCreateForm.contactsForm.childNodes[i].childNodes[1].value.trim() 
+                        });
+                    }
+                }
+
+                if (modalCreateForm.inputName.value.trim() && modalCreateForm.inputSurname.value.trim()) {
+                    fetch(`http://localhost:3000/api/clients/${id}`, {
+                        method: 'PATCH',
+                        body: JSON.stringify({
+                            name: modalCreateForm.inputName.value.trim().toLowerCase(),
+                            surname: modalCreateForm.inputSurname.value.trim().toLowerCase(),
+                            lastName: modalCreateForm.inputMiddleName.value.trim().toLowerCase(),
+                            contacts: contacts
+                        }),
+                        headers: {
+                            'Content-type': 'application/json'
+                        }
+                    });
+                } else if (!modalCreateForm.inputName.value.trim() && modalCreateForm.inputSurname.value.trim()) {
+                    modalCreateForm.inputName.classList.add('error-input');
+                    modalCreateBtnWrapper.errorText.textContent = 'Ошибка: не заполнено поле Имя';
+                    modalCreateBtnWrapper.btnSaveOrDelete.style.marginTop = '0px';
+                } else if (modalCreateForm.inputName.value.trim() && !modalCreateForm.inputSurname.value.trim()) {
+                    modalCreateForm.inputSurname.classList.add('error-input');
+                    modalCreateBtnWrapper.errorText.textContent = 'Ошибка: не заполнено поле Фамилия';
+                    modalCreateBtnWrapper.btnSaveOrDelete.style.marginTop = '0px';
+                } else {
+                    modalCreateForm.inputName.classList.add('error-input');
+                    modalCreateForm.inputSurname.classList.add('error-input');
+                    modalCreateBtnWrapper.errorText.textContent = 'Ошибка: не заполнены поля Фамилия и Имя';
+                    modalCreateBtnWrapper.btnSaveOrDelete.style.marginTop = '0px';
+                }
+        });
+
+        modalCreateBtnWrapper.cancelOrDelete.addEventListener('click', () => {
+            fetch(`http://localhost:3000/api/clients/${id}`, {
+                method: 'DELETE'
+            });
+        });
     }
 
     // Отрисовка таблицы
     function displayTable(arr) {
         arr.forEach(i => {
             tbody.append(createContact(i));
+            loading.classList.remove('loading');
+            loading.innerHTML = '';
         });
     }
 

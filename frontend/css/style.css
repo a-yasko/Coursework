@@ -58,6 +58,42 @@ main h4 {
     margin-top: 40px;
 }
 
+.loading {
+    position: relative;
+    height: 300px;
+    background-color: #fff;
+}
+
+.loading img {
+    position: absolute;
+    top: 50%;
+    margin-top: -36px;
+    left: 50%;
+    margin-left: -36px;
+}
+
+.loading img.test {
+    animation: 1s linear 0s normal none infinite running test;
+  -webkit-animation: 1s linear 0s normal none infinite running test;
+}
+
+@keyframes test {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  @-webkit-keyframes test {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
 .table {
     margin-top: 10px;
     vertical-align: middle;
@@ -123,7 +159,7 @@ main h4 {
     color: var(--grey);
 }
 
-.tooltip-test {
+.tooltips {
     position: relative;
     z-index: 9999 !important;
     position: fixed;
@@ -134,7 +170,7 @@ main h4 {
     background: #333;
 }
 
-.tooltip-test::after {
+.tooltips::after {
     content: " ";
     position: absolute;
     top: 100%; /* At the bottom of the tooltip */
@@ -241,6 +277,7 @@ main h4 {
 .modal-delete-client .modal-body p {
     margin: 0;
     margin-top: -25px;
+    margin-bottom: 25px;
 }
 
 /* Создание клиента */
@@ -271,12 +308,12 @@ main h4 {
     border-bottom: 1px solid #c8c5d180;
 }
 
-.modal form .inputs input::placeholder {
-    color: #b0b0b0;
+.modal form .inputs input:focus {
+    border-bottom: 1px solid #c8c5d180;
 }
 
-.modal form .inputs input:focus {
-    border-bottom: 1px solid #c8c5d1;
+.modal form .inputs .error-input {
+    border-bottom: 1px solid #F06A4D50;
 }
 
 .surname-placeholder,
@@ -459,4 +496,12 @@ main h4 {
     font-size: 12px;
     font-weight: 400;
     padding-left: 10px;
+}
+
+.modal .error-text {
+    margin-top: 8px;
+    margin-bottom: 9px;
+    text-align: center;
+    font-size: 14px;
+    color: #F06A4D;
 }
