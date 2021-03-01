@@ -1,11 +1,11 @@
 (() => {
     // Константы 
     const tbody = document.querySelector('.table tbody'),
-          theads = document.querySelectorAll('.table thead tr th'),
-          loading = document.querySelector('.loading'),
-          inputSearch = document.querySelector('#search'),
-          btnCreate = document.querySelector('.btn-create'),
-          modalContent = document.querySelector('#modal .modal-content');
+        theads = document.querySelectorAll('.table thead tr th'),
+        loading = document.querySelector('.loading'),
+        inputSearch = document.querySelector('#search'),
+        btnCreate = document.querySelector('.btn-create'),
+        modalContent = document.querySelector('#modal .modal-content');
 
     // Создание строки
     function createContact(data) {
@@ -16,10 +16,18 @@
             mmCreate = new Date(data.createdAt).getMonth() + 1,
             yyyyCreate = new Date(data.createdAt).getFullYear();
 
-        if (ddCreate < 10) {ddCreate = '0' + ddCreate;}
-        if (mmCreate < 10) {mmCreate = '0' + mmCreate;}
-        if (hoursCreate < 10) {hoursCreate = '0' + hoursCreate;}
-        if (minCreate < 10) {minCreate = '0' + minCreate;}
+        if (ddCreate < 10) {
+            ddCreate = '0' + ddCreate;
+        }
+        if (mmCreate < 10) {
+            mmCreate = '0' + mmCreate;
+        }
+        if (hoursCreate < 10) {
+            hoursCreate = '0' + hoursCreate;
+        }
+        if (minCreate < 10) {
+            minCreate = '0' + minCreate;
+        }
 
         // Форматируем дату редактирования
         let minChange = new Date(data.updatedAt).getMinutes(),
@@ -28,12 +36,20 @@
             mmChange = new Date(data.updatedAt).getMonth() + 1,
             yyyyChange = new Date(data.updatedAt).getFullYear();
 
-        if (ddChange < 10) {ddChange = '0' + ddChange;}
-        if (mmChange < 10) {mmChange = '0' + mmChange;}
-        if (hoursChange < 10) {hoursChange = '0' + hoursChange;}
-        if (minChange < 10) {minChange = '0' + minChange;}
+        if (ddChange < 10) {
+            ddChange = '0' + ddChange;
+        }
+        if (mmChange < 10) {
+            mmChange = '0' + mmChange;
+        }
+        if (hoursChange < 10) {
+            hoursChange = '0' + hoursChange;
+        }
+        if (minChange < 10) {
+            minChange = '0' + minChange;
+        }
 
-        
+
         // Формируем контакты
         let contacts = [];
 
@@ -78,12 +94,12 @@
         if (contacts.length > 5) {
             contacts.splice(5, 0, '<br>');
         }
-        
+
         const tr = document.createElement('tr'),
-              td = document.createElement('td'),
-              aChange = document.createElement('a'),
-              aDelete = document.createElement('a');
-        
+            td = document.createElement('td'),
+            aChange = document.createElement('a'),
+            aDelete = document.createElement('a');
+
         tr.innerHTML = `
             <td class="table__id">${data.id}</td>
             <td>
@@ -133,12 +149,14 @@
     // Tooltips
     let tooltipElem;
 
-    document.onmouseover = function(event) {
+    document.onmouseover = function (event) {
         let target = event.target;
 
         // если у нас есть подсказка...
         let tooltipHtml = target.dataset.tooltip;
-        if (!tooltipHtml) {return;}
+        if (!tooltipHtml) {
+            return;
+        }
 
         // ...создадим элемент для подсказки
         tooltipElem = document.createElement('div');
@@ -150,7 +168,9 @@
         let coords = target.getBoundingClientRect();
 
         let left = coords.left + (target.offsetWidth - tooltipElem.offsetWidth) / 2;
-        if (left < 0) {left = 0;} // не заезжать за левый край окна
+        if (left < 0) {
+            left = 0;
+        } // не заезжать за левый край окна
 
         let top = coords.top - tooltipElem.offsetHeight - 5;
         if (top < 0) { // если подсказка не помещается сверху, то отображать её снизу
@@ -161,7 +181,7 @@
         tooltipElem.style.top = top + 'px';
     };
 
-    document.onmouseout = function() {
+    document.onmouseout = function () {
         if (tooltipElem) {
             tooltipElem.remove();
             tooltipElem = null;
@@ -184,31 +204,40 @@
     }
 
     inputSearch.addEventListener('input', delaySearch);
-    
+
     // Сортировка по заголовкам таблицы
-    function sort(arr) {
+    function sort(data) {
+        const idHeader = theads[0],
+              fioHeader = theads[1],
+              createAtHeader = theads[2],
+              changAtHeader = theads[3];
+
         function clearCols() {
             tbody.innerHTML = '';
             for (let i = 0; i <= 3; ++i) {
                 theads[i].classList.remove('active');
             }
         }
-        
+
         // Сортировка по ID
-        theads[0].innerHTML = 'ID <span class="purple">↑</span>';
+        idHeader.innerHTML = 'ID <span class="purple">↑</span>';
 
         function sortID(arg1, arg2, arrow) {
-            displayTable(arr.sort((a, b) => {
-                if (a.id < b.id) {return arg1;}
-                if (a.id > b.id) {return arg2;}
+            displayTable(data.sort((a, b) => {
+                if (a.id < b.id) {
+                    return arg1;
+                }
+                if (a.id > b.id) {
+                    return arg2;
+                }
                 return 0;
             }));
-            theads[0].classList.add('active');
-            theads[0].innerHTML = `ID <span class="purple">${arrow}</span>`;
+            idHeader.classList.add('active');
+            idHeader.innerHTML = `ID <span class="purple">${arrow}</span>`;
         }
-        
+
         let countClick1 = 1;
-        theads[0].addEventListener('click', () => {
+        idHeader.addEventListener('click', () => {
             clearCols();
             if (countClick1 === 0) {
                 countClick1 = 1;
@@ -218,20 +247,24 @@
                 sortID(1, -1, '↓');
             }
         });
-        
+
         // Сортировка по ФИО
         function sortFIO(arg1, arg2, arrow) {
-            displayTable(arr.sort((a, b) => {
-                if (a.surname + a.name + a.middleName < b.surname + b.name + b.middleName) {return arg1;}
-                if (a.surname + a.name + a.middleName > b.surname + b.name + b.middleName) {return arg2;}
+            displayTable(data.sort((a, b) => {
+                if (a.surname + a.name + a.middleName < b.surname + b.name + b.middleName) {
+                    return arg1;
+                }
+                if (a.surname + a.name + a.middleName > b.surname + b.name + b.middleName) {
+                    return arg2;
+                }
                 return 0;
             }));
-            theads[1].classList.add('active');
-            theads[1].innerHTML = `Фамилия Имя Отчество <span class="purple">${arrow}</span>`;
+            fioHeader.classList.add('active');
+            fioHeader.innerHTML = `Фамилия Имя Отчество <span class="purple">${arrow}</span>`;
         }
 
         let countClick2 = 0;
-        theads[1].addEventListener('click', () => {
+        fioHeader.addEventListener('click', () => {
             clearCols();
             if (countClick2 === 0) {
                 countClick2 = 1;
@@ -244,17 +277,21 @@
 
         // Сортировка по дате создания
         function sortCreateDate(arg1, arg2, arrow) {
-            displayTable(arr.sort((a, b) => {
-                if (a.createdAt < b.createdAt) {return arg1;}
-                if (a.createdAt > b.createdAt) {return arg2;}
+            displayTable(data.sort((a, b) => {
+                if (a.createdAt < b.createdAt) {
+                    return arg1;
+                }
+                if (a.createdAt > b.createdAt) {
+                    return arg2;
+                }
                 return 0;
             }));
-            theads[2].classList.add('active');
-            theads[2].innerHTML = `Дата и время создания <span class="purple">${arrow}</span>`;
+            createAtHeader.classList.add('active');
+            createAtHeader.innerHTML = `Дата и время создания <span class="purple">${arrow}</span>`;
         }
 
         let countClick3 = 0;
-        theads[2].addEventListener('click', () => {
+        createAtHeader.addEventListener('click', () => {
             clearCols();
             if (countClick3 === 0) {
                 countClick3 = 1;
@@ -267,17 +304,21 @@
 
         // Сортировка по дате изменения
         function sortChangeDate(arg1, arg2, arrow) {
-            displayTable(arr.sort((a, b) => {
-                if (a.updatedAt < b.updatedAt) {return arg1;}
-                if (a.updatedAt > b.updatedAt) {return arg2;}
+            displayTable(data.sort((a, b) => {
+                if (a.updatedAt < b.updatedAt) {
+                    return arg1;
+                }
+                if (a.updatedAt > b.updatedAt) {
+                    return arg2;
+                }
                 return 0;
             }));
-            theads[3].classList.add('active');
-            theads[3].innerHTML = `Последние изменения <span class="purple">${arrow}</span>`;
+            changAtHeader.classList.add('active');
+            changAtHeader.innerHTML = `Последние изменения <span class="purple">${arrow}</span>`;
         }
 
         let countClick4 = 0;
-        theads[3].addEventListener('click', () => {
+        changAtHeader.addEventListener('click', () => {
             clearCols();
             if (countClick4 === 0) {
                 countClick4 = 1;
@@ -290,11 +331,11 @@
     }
 
     // Создаем заголовок для модального окна
-    function createModalHeader(textContent, paddingLeft = '13px', id = '', idText = '') {
+    function createModalHeader({ textContent, paddingLeft = '13px', id = '', idText = '' }) {
         const modalHeader = document.createElement('div'),
-              modalTitle = document.createElement('h5'),
-              idClient = document.createElement('span'),
-              btnClose = document.createElement('button');
+            modalTitle = document.createElement('h5'),
+            idClient = document.createElement('span'),
+            btnClose = document.createElement('button');
 
         modalHeader.classList.add('modal-header');
         modalTitle.classList.add('modal-title');
@@ -314,7 +355,7 @@
     }
 
     // Создаем кнопки сохранения, удаления, отмены
-    function createBtnWrapper(textBtn, textCancelOrDelete) {
+    function createBtnWrapper({ textBtn, textCancelOrDelete }) {
         const btnWrapper = document.createElement('div'),
               errorText = document.createElement('p'),
               btnSaveOrDelete = document.createElement('button'),
@@ -340,17 +381,19 @@
 
     // Удаление контакта
     function deleteClient(id) {
-        modalContent.append(createModalHeader('Удалить клиента', '30%'));
+        modalContent.append(createModalHeader({ textContent: 'Удалить клиента', paddingLeft: '30%'}));
 
         const modalBody = document.createElement('div'),
               text = document.createElement('p'),
-              modalCreateBtnWrapper = createBtnWrapper('Удалить', 'Отмена');
+              form = document.createElement('form'),
+              modalCreateBtnWrapper = createBtnWrapper({ textBtn: 'Удалить', textCancelOrDelete: 'Отмена' });
 
         modalBody.classList.add('modal-body', 'text-center');
         text.innerHTML = 'Вы действительно хотите удалить<br> данного клиента?';
         modalCreateBtnWrapper.cancelOrDelete.setAttribute('data-bs-dismiss', 'modal');
 
-        modalBody.append(text, modalCreateBtnWrapper.btnWrapper);
+        form.append(modalCreateBtnWrapper.btnWrapper);
+        modalBody.append(text, form);
         modalContent.append(modalBody);
 
         modalCreateBtnWrapper.btnSaveOrDelete.addEventListener('click', () => {
@@ -363,19 +406,19 @@
     // Форма для контакта
     let countContactsForms = 0;
 
-    function createForm(surenameValue = '', nameValue = '', middleNameValue = '') {
+    function createForm({ surnameValue = '', nameValue = '', middleNameValue = '' }) {
         const modalBody = document.createElement('div'),
-              form = document.createElement('form'),
-              inputs = document.createElement('div'),
-              surname = document.createElement('div'),
-              name = document.createElement('div'),
-              middleName = document.createElement('div'),
-              inputSurname = document.createElement('input'),
-              inputName = document.createElement('input'),
-              inputMiddleName = document.createElement('input'),
-              createContacts = document.createElement('div'),
-              contactsForm = document.createElement('div'),
-              btnAddContactForm = document.createElement('span');
+            form = document.createElement('form'),
+            inputs = document.createElement('div'),
+            surname = document.createElement('div'),
+            name = document.createElement('div'),
+            middleName = document.createElement('div'),
+            inputSurname = document.createElement('input'),
+            inputName = document.createElement('input'),
+            inputMiddleName = document.createElement('input'),
+            createContacts = document.createElement('div'),
+            contactsForm = document.createElement('div'),
+            btnAddContactForm = document.createElement('span');
 
         modalBody.classList.add('modal-body');
         inputs.classList.add('inputs');
@@ -384,7 +427,7 @@
         middleName.classList.add('mb-3', 'middle-name-placeholder');
         inputSurname.classList.add('form-control');
         inputSurname.setAttribute('type', 'text');
-        inputSurname.value = surenameValue;
+        inputSurname.value = surnameValue;
         inputName.classList.add('form-control');
         inputName.setAttribute('type', 'text');
         inputName.value = nameValue;
@@ -456,7 +499,7 @@
 
         btnAddContactForm.addEventListener('click', () => {
             ++countContactsForms;
-            contactsForm.append(createAddContactForm());
+            contactsForm.append(createAddContactForm({}));
             if (countContactsForms >= 10) {
                 btnAddContactForm.style.display = 'none';
             }
@@ -477,16 +520,16 @@
     }
 
     // Создаем форму для добавления контакта
-    function createAddContactForm(type = '', value = '') {
+    function createAddContactForm({ type = '', value = '' }) {
         const inputGroup = document.createElement('div'),
-              select = document.createElement('select'),
-              optionTel = document.createElement('option'),
-              optionEmail = document.createElement('option'),
-              optionFacebook = document.createElement('option'),
-              optionVK = document.createElement('option'),
-              optionOther = document.createElement('option'),
-              input = document.createElement('input'),
-              btnDeleteContact = document.createElement('button');
+            select = document.createElement('select'),
+            optionTel = document.createElement('option'),
+            optionEmail = document.createElement('option'),
+            optionFacebook = document.createElement('option'),
+            optionVK = document.createElement('option'),
+            optionOther = document.createElement('option'),
+            input = document.createElement('input'),
+            btnDeleteContact = document.createElement('button');
 
         inputGroup.classList.add('input-group', 'mb-3');
         select.classList.add('form-select');
@@ -560,25 +603,23 @@
             modalContent.innerHTML = '';
             modalContent.classList.remove('modal-delete-client', 'modal-change-client');
             modalContent.classList.add('modal-create-client');
-            modalContent.append(createModalHeader('Новый клиент'));
+            modalContent.append(createModalHeader({ textContent: 'Новый клиент' }));
 
-            const modalCreateForm = createForm(),
-                  modalCreateBtnWrapper = createBtnWrapper('Сохранить', 'Отмена');
+            const modalCreateForm = createForm({}),
+                  modalCreateBtnWrapper = createBtnWrapper({ textBtn: 'Сохранить', textCancelOrDelete: 'Отмена' });
 
             modalContent.append(modalCreateForm.modalBody);
             modalCreateForm.form.append(modalCreateBtnWrapper.btnWrapper);
             modalCreateBtnWrapper.cancelOrDelete.setAttribute('data-bs-dismiss', 'modal');
 
             modalCreateBtnWrapper.btnSaveOrDelete.addEventListener('click', (e) => {
-                e.preventDefault();
-
                 let contacts = [];
                 for (let i = 0; i < modalCreateForm.contactsForm.childNodes.length; ++i) {
-                    if (modalCreateForm.contactsForm.childNodes[i].childNodes[0].value.trim() && 
-                    modalCreateForm.contactsForm.childNodes[i].childNodes[1].value.trim()) {
-                        contacts.push({ 
-                            type: modalCreateForm.contactsForm.childNodes[i].childNodes[0].value.trim(), 
-                            value: modalCreateForm.contactsForm.childNodes[i].childNodes[1].value.trim() 
+                    if (modalCreateForm.contactsForm.childNodes[i].childNodes[0].value.trim() &&
+                        modalCreateForm.contactsForm.childNodes[i].childNodes[1].value.trim()) {
+                        contacts.push({
+                            type: modalCreateForm.contactsForm.childNodes[i].childNodes[0].value.trim(),
+                            value: modalCreateForm.contactsForm.childNodes[i].childNodes[1].value.trim()
                         });
                     }
                 }
@@ -597,14 +638,17 @@
                         }
                     });
                 } else if (!modalCreateForm.inputName.value.trim() && modalCreateForm.inputSurname.value.trim()) {
+                    e.preventDefault();
                     modalCreateForm.inputName.classList.add('error-input');
                     modalCreateBtnWrapper.errorText.textContent = 'Ошибка: не заполнено поле Имя';
                     modalCreateBtnWrapper.btnSaveOrDelete.style.marginTop = '0px';
                 } else if (modalCreateForm.inputName.value.trim() && !modalCreateForm.inputSurname.value.trim()) {
+                    e.preventDefault();
                     modalCreateForm.inputSurname.classList.add('error-input');
                     modalCreateBtnWrapper.errorText.textContent = 'Ошибка: не заполнено поле Фамилия';
                     modalCreateBtnWrapper.btnSaveOrDelete.style.marginTop = '0px';
                 } else {
+                    e.preventDefault();
                     modalCreateForm.inputName.classList.add('error-input');
                     modalCreateForm.inputSurname.classList.add('error-input');
                     modalCreateBtnWrapper.errorText.textContent = 'Ошибка: не заполнены поля Фамилия и Имя';
@@ -621,15 +665,15 @@
         modalContent.classList.add('modal-change-client');
 
         const response = await fetch(`http://localhost:3000/api/clients/${id}`),
-              data = await response.json(),
-              modalCreateForm = createForm(
-                  data.surname.substr(0, 1).toUpperCase() + data.surname.substr(1).toLowerCase(), 
-                  data.name.substr(0, 1).toUpperCase() + data.name.substr(1).toLowerCase(),
-                  data.lastName.substr(0, 1).toUpperCase() + data.lastName.substr(1).toLowerCase()
-              ),
-              modalCreateBtnWrapper = createBtnWrapper('Сохранить', 'Удалить клиента');
+            data = await response.json(),
+            modalCreateForm = createForm({
+                surnameValue: data.surname.substr(0, 1).toUpperCase() + data.surname.substr(1).toLowerCase(),
+                nameValue: data.name.substr(0, 1).toUpperCase() + data.name.substr(1).toLowerCase(),
+                middleNameValue: data.lastName.substr(0, 1).toUpperCase() + data.lastName.substr(1).toLowerCase()
+            }),
+            modalCreateBtnWrapper = createBtnWrapper({ textBtn: 'Сохранить', textCancelOrDelete: 'Удалить клиента'});
 
-        modalContent.append(createModalHeader('Изменить данные', '13px', id, 'ID: '));
+        modalContent.append(createModalHeader({ textContent: 'Изменить данные', paddingLeft: '13px', id: id, idText: 'ID: ' }));
         modalContent.append(modalCreateForm.modalBody);
         modalCreateForm.form.append(modalCreateBtnWrapper.btnWrapper);
 
@@ -642,49 +686,51 @@
 
         countContactsForms = data.contacts.length;
         for (const contact of data.contacts) {
-            modalCreateForm.contactsForm.append(createAddContactForm(contact.type, contact.value));
+            modalCreateForm.contactsForm.append(createAddContactForm({ type: contact.type, value: contact.value }));
         }
 
         modalCreateBtnWrapper.btnSaveOrDelete.addEventListener('click', (e) => {
-            e.preventDefault();
             let contacts = [];
-                for (let i = 0; i < modalCreateForm.contactsForm.childNodes.length; ++i) {
-                    if (modalCreateForm.contactsForm.childNodes[i].childNodes[0].value.trim() && 
+            for (let i = 0; i < modalCreateForm.contactsForm.childNodes.length; ++i) {
+                if (modalCreateForm.contactsForm.childNodes[i].childNodes[0].value.trim() &&
                     modalCreateForm.contactsForm.childNodes[i].childNodes[1].value.trim()) {
-                        contacts.push({ 
-                            type: modalCreateForm.contactsForm.childNodes[i].childNodes[0].value.trim(), 
-                            value: modalCreateForm.contactsForm.childNodes[i].childNodes[1].value.trim() 
-                        });
-                    }
-                }
-
-                if (modalCreateForm.inputName.value.trim() && modalCreateForm.inputSurname.value.trim()) {
-                    fetch(`http://localhost:3000/api/clients/${id}`, {
-                        method: 'PATCH',
-                        body: JSON.stringify({
-                            name: modalCreateForm.inputName.value.trim().toLowerCase(),
-                            surname: modalCreateForm.inputSurname.value.trim().toLowerCase(),
-                            lastName: modalCreateForm.inputMiddleName.value.trim().toLowerCase(),
-                            contacts: contacts
-                        }),
-                        headers: {
-                            'Content-type': 'application/json'
-                        }
+                    contacts.push({
+                        type: modalCreateForm.contactsForm.childNodes[i].childNodes[0].value.trim(),
+                        value: modalCreateForm.contactsForm.childNodes[i].childNodes[1].value.trim()
                     });
-                } else if (!modalCreateForm.inputName.value.trim() && modalCreateForm.inputSurname.value.trim()) {
-                    modalCreateForm.inputName.classList.add('error-input');
-                    modalCreateBtnWrapper.errorText.textContent = 'Ошибка: не заполнено поле Имя';
-                    modalCreateBtnWrapper.btnSaveOrDelete.style.marginTop = '0px';
-                } else if (modalCreateForm.inputName.value.trim() && !modalCreateForm.inputSurname.value.trim()) {
-                    modalCreateForm.inputSurname.classList.add('error-input');
-                    modalCreateBtnWrapper.errorText.textContent = 'Ошибка: не заполнено поле Фамилия';
-                    modalCreateBtnWrapper.btnSaveOrDelete.style.marginTop = '0px';
-                } else {
-                    modalCreateForm.inputName.classList.add('error-input');
-                    modalCreateForm.inputSurname.classList.add('error-input');
-                    modalCreateBtnWrapper.errorText.textContent = 'Ошибка: не заполнены поля Фамилия и Имя';
-                    modalCreateBtnWrapper.btnSaveOrDelete.style.marginTop = '0px';
                 }
+            }
+
+            if (modalCreateForm.inputName.value.trim() && modalCreateForm.inputSurname.value.trim()) {
+                fetch(`http://localhost:3000/api/clients/${id}`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({
+                        name: modalCreateForm.inputName.value.trim().toLowerCase(),
+                        surname: modalCreateForm.inputSurname.value.trim().toLowerCase(),
+                        lastName: modalCreateForm.inputMiddleName.value.trim().toLowerCase(),
+                        contacts: contacts
+                    }),
+                    headers: {
+                        'Content-type': 'application/json'
+                    }
+                });
+            } else if (!modalCreateForm.inputName.value.trim() && modalCreateForm.inputSurname.value.trim()) {
+                e.preventDefault();
+                modalCreateForm.inputName.classList.add('error-input');
+                modalCreateBtnWrapper.errorText.textContent = 'Ошибка: не заполнено поле Имя';
+                modalCreateBtnWrapper.btnSaveOrDelete.style.marginTop = '0px';
+            } else if (modalCreateForm.inputName.value.trim() && !modalCreateForm.inputSurname.value.trim()) {
+                e.preventDefault();
+                modalCreateForm.inputSurname.classList.add('error-input');
+                modalCreateBtnWrapper.errorText.textContent = 'Ошибка: не заполнено поле Фамилия';
+                modalCreateBtnWrapper.btnSaveOrDelete.style.marginTop = '0px';
+            } else {
+                e.preventDefault();
+                modalCreateForm.inputName.classList.add('error-input');
+                modalCreateForm.inputSurname.classList.add('error-input');
+                modalCreateBtnWrapper.errorText.textContent = 'Ошибка: не заполнены поля Фамилия и Имя';
+                modalCreateBtnWrapper.btnSaveOrDelete.style.marginTop = '0px';
+            }
         });
 
         modalCreateBtnWrapper.cancelOrDelete.addEventListener('click', () => {
@@ -695,8 +741,8 @@
     }
 
     // Отрисовка таблицы
-    function displayTable(arr) {
-        arr.forEach(i => {
+    function displayTable(data) {
+        data.forEach(i => {
             tbody.append(createContact(i));
             loading.classList.remove('loading');
             loading.innerHTML = '';
@@ -709,8 +755,12 @@
         const data = await response.json();
 
         displayTable(data.sort((a, b) => {
-            if (a.id < b.id) {return -1;}
-            if (a.id > b.id) {return 1;}
+            if (a.id < b.id) {
+                return -1;
+            }
+            if (a.id > b.id) {
+                return 1;
+            }
             return 0;
         }));
 

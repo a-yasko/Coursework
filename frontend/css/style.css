@@ -118,6 +118,14 @@ main h4 {
     color: #333;
 }
 
+.table thead th.not-hover {
+    cursor: default;
+}
+
+.table thead th.not-hover:hover {
+    color: var(--grey);
+}
+
 .table thead .active {
     color: var(--purple);
     font-weight: 700;
